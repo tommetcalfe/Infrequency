@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 import string
 import random
 from random import shuffle
@@ -11,8 +11,72 @@ import os
 import sys
 import subprocess
 import soundcloud
+import datetime
+import webbrowser
+import sys
+import time
+import termios
+import SimpleHTTPServer
+import SocketServer
 
+
+HOST_NAME = "127.0.0.1" # !!!REMEMBER TO CHANGE THIS!!!
+PORT_NUMBER = 8888 # Maybe set this to 9000.
+
+Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+
+class MyTCPServer(SocketServer.TCPServer):
+    allow_reuse_address = True
+    def do_HEAD(s):
+        s.send_response(200)
+        s.send_header("Content-type", "text/html")
+        s.end_headers()
+
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write("<html><head><title>Title goes here.</title></head>")
+        self.wfile.write("<body><p>This is a test.</p>")
+        # If someone went to "http://something.somewhere.net/foo/bar/",
+        # then s.path equals "/foo/bar/".
+        self.wfile.write("<p>You accessed path: %s</p>" % self.path)
+        self.wfile.write("</body></html>")
+        return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+
+
+
+#socketserver.TCPServer("", PORT_NUMBER), Handler)
+
+
+
+# global xangle
+
+TERMIOS = termios
 M_PI = 3.141592
+
+#----------------------------------------------------
+trackNames = []
+trackStreamingURLs = []
+trackID = []
+trackCreatedAt = []
+trackJSON = []
+#----------------------------------------------------
+# Function to get keys
+def getkey():
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    new = termios.tcgetattr(fd)
+    new[3] = new[3] & ~TERMIOS.ICANON & ~TERMIOS.ECHO
+    new[6][TERMIOS.VMIN] = 1
+    new[6][TERMIOS.VTIME] = 0
+    termios.tcsetattr(fd, TERMIOS.TCSANOW, new)
+    c = None
+    try:
+            c = os.read(fd, 1)
+    finally:
+            termios.tcsetattr(fd, TERMIOS.TCSAFLUSH, old)
+    return c
 
 #----------------------------------------------------
 # Function to return the degrees from the Accelorometer
@@ -33,13 +97,16 @@ def setup():
     print '------------------------'
     print 'Client ID'
     print clientID
-
-    client = soundcloud.Client(client_id=clientID)
+    return clientID
+#----------------------------------------------------
+# Get Tracks
+def getTracks(id,query):
+    client = soundcloud.Client(client_id=id)
     streamURLClient = client
     print '------------------------'
     print 'Getting tracklist'
     try:
-        tracks = client.get('/tracks', q='bbc')
+        tracks = client.get('/tracks', q=query)
     except Exception, e:
         print 'Error: %s, Status Code: %d' % (e.message, e.response.status_code)
 
@@ -49,6 +116,47 @@ def setup():
         print track.title
         print ""
         print newURL.location
+        print ""
+        print datetime.datetime.now()
+        trackJSON.append({"id":1,"title":track.title,"streamurl":newURL.location,"created_at":datetime.datetime.now()})
 
 # convertAccelToAngle(0.0,0.0,0.0)
-setup()
+
+cID = setup()
+#----------------------------------------------------
+def main_loop():
+    xangle = 0.000
+    while 1:
+        if xangle > 0.000:
+            xangle -= 0.01
+        elif xangle < 0.000:
+            xangle += 0.01
+
+        c = getkey()
+
+        if c == 'r':
+            xangle = 0.74
+            print convertAccelToAngle(0.4,0.1,0.1)
+        if c == 'g':
+            getTracks(id=cID,query='bbc')
+        if c == 'p':
+#            webbrowser.open(trackJSON[0]["streamurl"],0,True)
+            print 'got', c
+
+        print xangle
+        time.sleep(0.1)
+
+#----------------------------------------------------
+if __name__ == '__main__':
+    
+    httpd = MyTCPServer((HOST_NAME, PORT_NUMBER),Handler)
+    print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
+
+    try:
+        main_loop()
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        httpd.server_close()
+        print time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
+        print >> sys.stderr, '\nExiting by user request.\n'
+        sys.exit(0)
