@@ -148,7 +148,7 @@ def main_loop():
 
 #----------------------------------------------------
 if __name__ == '__main__':
-    
+
     httpd = MyTCPServer((HOST_NAME, PORT_NUMBER),Handler)
     print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
 
