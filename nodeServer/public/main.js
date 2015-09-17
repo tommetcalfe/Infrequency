@@ -1,19 +1,25 @@
 var soundcloudTracks =[];
+
+var fading = false;
 function setupSoundCloud() {
     SC.initialize({
-        client_id: 'xxx'
+        client_id: '004f94bea5f40f3f5efcbd72928c6cfa'
     });
 }
 //-----------------------------------------------------------------
 function VolManager(currentTrack) {
     var track = currentTrack;
     var vol = 50;
-
     this.updateVolume  = function () {
         $("#volume").html("Current Volume: " + vol);
         track.setVolume(vol);
     };
 
+    // this.fadeIn = function() {
+    //     if (vol >= 50) return;
+    //     vol += 2;
+    //     this.updateVolume();
+    // };
     // Increases volume level
     this.volUp = function () {
       if (vol >= 100) return;
@@ -49,7 +55,7 @@ function StateMan(currentTrack) {
       if (state == "play" ) return;
       state = "play";
       track.play();
-      $("#state").html("State: Playing");
+      $("#state").html("Playing");
     };
 
     // Stop playback if not already stopped
@@ -57,7 +63,7 @@ function StateMan(currentTrack) {
       if (state == "stop" ) return;
       state = "stop";
       track.stop();
-      $("#state").html("State: Stopped");
+      $("#state").html("Stopped");
     };
 
     // Pause playback if not already Paused
@@ -65,7 +71,7 @@ function StateMan(currentTrack) {
       if (state == "pause" ) return;
       state = "pause";
       track.pause();
-      $("#state").html("State: Paused");
+      $("#state").html("Paused");
     };
     // Initial state update
     this.stop();
@@ -87,11 +93,12 @@ $(document).ready(function() {
     setupSoundCloud();
     getTracks();
 
-    var trackInfo = "/tracks/";
+    var trackInfo = "/tracks/148745109";
     console.log(soundcloudTracks);
-    // SC.stream(trackInfo,function(sound){
-    //     console.log(sound);
-    //     stateMan = new StateMan(sound);
-    //     volMan = new VolManager(sound);
-    // });
+    SC.stream(trackInfo,function(sound){
+        console.log(sound);
+        stateMan = new StateMan(sound);
+        volMan = new VolManager(sound);
+    });
+
 });
