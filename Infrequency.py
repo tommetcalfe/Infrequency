@@ -20,36 +20,30 @@ import SimpleHTTPServer
 import SocketServer
 
 
-HOST_NAME = "127.0.0.1" # !!!REMEMBER TO CHANGE THIS!!!
-PORT_NUMBER = 8888 # Maybe set this to 9000.
+# HOST_NAME = "127.0.0.1"
+# PORT_NUMBER = 8888
 
-Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+#create ADXL345 object
+accel = adxl345.ADXL345()
 
-class MyTCPServer(SocketServer.TCPServer):
-    allow_reuse_address = True
-    def do_HEAD(s):
-        s.send_response(200)
-        s.send_header("Content-type", "text/html")
-        s.end_headers()
+# Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.wfile.write("<html><head><title>Title goes here.</title></head>")
-        self.wfile.write("<body><p>This is a test.</p>")
-        # If someone went to "http://something.somewhere.net/foo/bar/",
-        # then s.path equals "/foo/bar/".
-        self.wfile.write("<p>You accessed path: %s</p>" % self.path)
-        self.wfile.write("</body></html>")
-        return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
-
-
-
-#socketserver.TCPServer("", PORT_NUMBER), Handler)
-
-
-
+# class MyTCPServer(SocketServer.TCPServer):
+#     allow_reuse_address = True
+#     def do_HEAD(s):
+#         s.send_response(200)
+#         s.send_header("Content-type", "text/html")
+#         s.end_headers()
+#
+#     def do_GET(self):
+#         self.send_response(200)
+#         self.send_header("Content-type", "text/html")
+#         self.end_headers()
+#         self.wfile.write("<html><head><title>Title goes here.</title></head>")
+#         self.wfile.write("<body><p>This is a test.</p>")
+#         self.wfile.write("<p>You accessed path: %s</p>" % self.path)
+#         self.wfile.write("</body></html>")
+#         return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 # global xangle
 
 TERMIOS = termios
@@ -61,6 +55,7 @@ trackStreamingURLs = []
 trackID = []
 trackCreatedAt = []
 trackJSON = []
+
 #----------------------------------------------------
 # Function to get keys
 def getkey():
@@ -79,13 +74,27 @@ def getkey():
     return c
 
 #----------------------------------------------------
+# Accelorometer Stuff
+#----------------------------------------------------
+def setupAccel():
+    accel.setRange(adxl345.RANGE_2G)
+    accel.setRange(adxl345.RANGE_4G)
+    accel.setRange(adxl345.RANGE_8G)
+    accel.setRange(adxl345.RANGE_16G)
+#----------------------------------------------------
 # Function to return the degrees from the Accelorometer
 def convertAccelToAngle(x,y,z):
     roll = (math.atan2(-y,z)*180)/M_PI
     pitch = (math.atan2(x,math.sqrt(y*y + z*z))*180)/M_PI
-    # yaw = (math.atan(math.sqrt(x)+math.sqrt(y)/z)*180)/M_PI
-    print roll
-    print pitch
+    yaw = (math.atan(math.sqrt(x)+math.sqrt(y)/z)*180)/M_PI
+    return roll,pitch,yaw
+    # print roll
+    # print pitch
+#----------------------------------------------------
+# Update and check conditions
+def updateAccel():
+    axes = accel.getAxes(True)
+    convertAccelToAngle(axes['x'],axes['y'],axes['z'])
 
 #----------------------------------------------------
 # Setup the stream
@@ -140,7 +149,6 @@ def main_loop():
         if c == 'g':
             getTracks(id=cID,query='bbc')
         if c == 'p':
-#            webbrowser.open(trackJSON[0]["streamurl"],0,True)
             print 'got', c
 
         print xangle
@@ -148,15 +156,8 @@ def main_loop():
 
 #----------------------------------------------------
 if __name__ == '__main__':
-
-    httpd = MyTCPServer((HOST_NAME, PORT_NUMBER),Handler)
-    print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
-
     try:
         main_loop()
-        httpd.serve_forever()
     except KeyboardInterrupt:
-        httpd.server_close()
-        print time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
         print >> sys.stderr, '\nExiting by user request.\n'
         sys.exit(0)
