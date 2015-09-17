@@ -15,11 +15,6 @@ function VolManager(currentTrack) {
         track.setVolume(vol);
     };
 
-    // this.fadeIn = function() {
-    //     if (vol >= 50) return;
-    //     vol += 2;
-    //     this.updateVolume();
-    // };
     // Increases volume level
     this.volUp = function () {
       if (vol >= 100) return;
@@ -83,7 +78,7 @@ function getTracks() {
             var links = $('<div><p>'+i+' <strong>ID</strong>:'+tracks[i].id+' <strong>Title</strong>:'+tracks[i].title+'</p></div>');
             links.appendTo($('#tracks'));
         }
-        soundcloudTracks = $.makeArray( tracks );
+        // soundcloudTracks = $.makeArray( tracks );
     });
 }
 
