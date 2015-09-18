@@ -1,7 +1,14 @@
-var sys = require("sys");
+var sys = require("util");
 var http = require("http");
 var fs = require("fs");
+var ssePusher = require('sse-pusher');
+var connect = require('connect');
+var app = connect();
 
+var push = ssePusher(); // instantiation variant 1
+var push = ssePusher.create();
+
+app.use(push.handler('/some/path'));
 //-------------------------------------------------------------------------
 http.createServer(function(request,response){
     if (request.url.indexOf('.js') != -1) {
@@ -49,4 +56,6 @@ http.createServer(function(request,response){
         });
     }
 }).listen(8080);
+push('eventname', 'eventdata');
+
 console.log("Infrequency Launched at 127.0.0.1:8080");

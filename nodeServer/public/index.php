@@ -34,24 +34,23 @@
                 </div>
                 <div align="center">
                     <h5 style='color:black;'  id="state">Stopped</h5>
+                    <button id="play" onclick="stateMan.play();" style="border:none;" class="btn btn-primary" type="button">
+                        <span class="glyphicon glyphicon-play" style='color:white;' aria-hidden='true'></span>
+                    </button>
+                    <button id="stop" onclick="stateMan.stop() " style="border:none;" class="btn btn-primary" type="button">
+                        <span class="glyphicon glyphicon-stop" style='color:white;' aria-hidden='true'></span>
+                    </button>
+                    <button id="pause" onclick="stateMan.pause()" style="border:none;" class="btn btn-primary" type="button">
+                        <span class="glyphicon glyphicon-pause" style='color:white;' aria-hidden='true'></span>
+                    </button>
+                    <button id="select" onclick="selectRandomTrack()" style="border:none;" class="btn btn-primary" type="button">
+                        <span class="glyphicon glyphicon-filter" style='color:white;' aria-hidden='true'></span>
+                    </button>
                     <!-- <h5 style='color:black;'  id="volume">Current Volume: 50</h5> -->
                 </div>
                 <div class="container">
-                    <div align="left">
+                    <div align="center">
                         <div id="tracks"></div>
-                    </div>
-                </div>
-                <div class="mastfoot">
-                    <div class="inner">
-                        <button id="play" onclick="stateMan.play();" style="border:none;" class="btn btn-primary" type="button">
-                            <span class="glyphicon glyphicon-play" style='color:white;' aria-hidden='true'></span>
-                        </button>
-                        <button id="stop" onclick="stateMan.stop() " style="border:none;" class="btn btn-primary" type="button">
-                            <span class="glyphicon glyphicon-stop" style='color:white;' aria-hidden='true'></span>
-                        </button>
-                        <button id="pause" onclick="stateMan.pause()" style="border:none;" class="btn btn-primary" type="button">
-                            <span class="glyphicon glyphicon-pause" style='color:white;' aria-hidden='true'></span>
-                        </button>
                     </div>
                 </div>
             </div>
