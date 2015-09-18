@@ -34,6 +34,7 @@ I came across a strange error with the breakout board and the i2ctools did not r
 ![Schematic](./images/Infrequency_schem.jpg "Schematic")
 
 The wiring otherwise involves:
+
 | ADXL345  | RPi |
 |---|---|
 | GND | GND (pin 9) |
