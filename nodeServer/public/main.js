@@ -1,4 +1,4 @@
-var soundcloudTracks =[];
+var soundcloudTracks = [];
 
 var fading = false;
 function setupSoundCloud() {
@@ -72,28 +72,59 @@ function StateMan(currentTrack) {
     this.stop();
 }
 //-----------------------------------------------------------------
-function getTracks() {
-    SC.get('/tracks', { q: 'bbc', limit: 20 }, function(tracks,err) {
+function getTracks(searchTerm) {
+    // soundcloudTracks = [];
+    SC.get('/tracks', { q: searchTerm, limit: 20 }, function(tracks,err) {
         for (var i = 0; i < tracks.length; i++) {
-            var links = $('<div><p>'+i+' <strong>ID</strong>:'+tracks[i].id+' <strong>Title</strong>:'+tracks[i].title+'</p></div>');
-            links.appendTo($('#tracks'));
+            var links = $('<div><p style="font-size:8px;">'+i+' <strong>ID</strong>:'+tracks[i].id+' <strong>Title</strong>:'+tracks[i].title+'</p></div>');
+            // $('#tracks').appendTo(links).hide().slideDown('slow');
+            links.appendTo($('#tracks')).hide().slideDown('slow');
+
+
         }
+        soundcloudTracks = tracks;
+        // soundcloudTracks = copy(tracks);
+        // }
         // soundcloudTracks = $.makeArray( tracks );
     });
 }
-
+//-----------------------------------------------------------------
+function copy(o) {
+   var out, v, key;
+   out = Array.isArray(o) ? [] : {};
+   for (key in o) {
+       v = o[key];
+       out[key] = (typeof v === "object") ? copy(v) : v;
+   }
+   return out;
+}
+//-----------------------------------------------------------------
+function selectRandomTrack() {
+    soundcloudTracks
+}
 //-----------------------------------------------------------------
 $(document).ready(function() {
 
     setupSoundCloud();
-    getTracks();
-
-    var trackInfo = "/tracks/148745109";
+    getTracks("disclosure");
     console.log(soundcloudTracks);
-    SC.stream(trackInfo,function(sound){
+    var trackInfo = "160106800";
+
+    var source = new EventSource("/tilt");
+    source.onmessage = function(event) {
+        console.log(event.data);
+    };
+
+    SC.stream("/tracks/"+trackInfo,function(sound){
         console.log(sound);
         stateMan = new StateMan(sound);
         volMan = new VolManager(sound);
     });
 
+    $('#submit').click(function(){
+        $('#tracks').empty();
+        var str = $("#get").val();
+        getTracks(str);
+        console.log(soundcloudTracks);
+    });
 });
