@@ -12,7 +12,13 @@ x = 0;
 y = 0;
 z = 0;
 
-
+#----------------------------------------------------
+# Function to return the degrees from the Accelorometer
+def convertAccelToAngle(x,y,z):
+    roll = (math.atan2(-y,z)*180)/M_PI
+    pitch = (math.atan2(x,math.sqrt(y*y + z*z))*180)/M_PI
+    yaw = (math.atan(math.sqrt(x)+math.sqrt(y)/z)*180)/M_PI
+    return roll,pitch,yaw
 #----------------------------------------------------
 def setupAccel():
     accel.setRange(adxl345.RANGE_2G)
@@ -33,14 +39,11 @@ def sendPlayEvent():
 
 #----------------------------------------------------
 def main_loop():
-
-
-
     while 1:
         # Get the Angle converted into degrees
         xyz = convertAccelToAngle(accel.getAxis())
         print xyz;
-        
+
         # Angle relates to the return angle from the Accelorometer
         # So if the sensor is beyond both positive or negative angles
         # trigger the stop signal;
@@ -55,15 +58,6 @@ def main_loop():
             sendPlayEvent();
             playLatch = False;
             stopLatch = False;
-
-
-#----------------------------------------------------
-# Function to return the degrees from the Accelorometer
-def convertAccelToAngle(x,y,z):
-    roll = (math.atan2(-y,z)*180)/M_PI
-    pitch = (math.atan2(x,math.sqrt(y*y + z*z))*180)/M_PI
-    yaw = (math.atan(math.sqrt(x)+math.sqrt(y)/z)*180)/M_PI
-    return roll,pitch,yaw
 
 #----------------------------------------------------
 if __name__ == '__main__':
