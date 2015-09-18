@@ -36,10 +36,10 @@ I came across a strange error with the breakout board and the i2ctools did not r
 The wiring otherwise involves:
 | ADXL345  | RPi |
 |---|---|
-| GND | GND (pin 9)|
-| Vcc | 3v3 (pin 1)|
-| SDA | SDA (pin 3)|
-| SCL | SCL (pin 5)|
-| CS  | 3v3 (pin 17)|
+| GND | GND (pin 9) |
+| Vcc | 3v3 (pin 1) |
+| SDA | SDA (pin 3) |
+| SCL | SCL (pin 5) |
+| CS  | 3v3 (pin 17) |
 | INT1 | NC |
 | INT2 | NC |
