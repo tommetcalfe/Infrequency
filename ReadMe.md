@@ -4,6 +4,9 @@ Infrequency
 ####Introduction
 Is an internet of things radio.
 
+####Components
+1x Raspberry Pi
+
 ####Configuring the Pi
 
 
@@ -24,3 +27,19 @@ Reboot
 Get the i2c stuff
 * ```` sudo apt-get install python-smbus i2c-tools git-core ````
 * ```` sudo i2cdetect -y 1 ````
+
+####Configuring the ADXL345
+I came across a strange error with the breakout board and the i2ctools did not recognise the device. My solution was to connect the `cs` pin to the 3v3 output.
+
+![Schematic](Infrequency_schem.jpg "Schematic")
+
+The wiring otherwise involves:
+| ADXL345  | RPi |
+|---|---|
+| GND | GND (pin 9)|
+| Vcc | 3v3 (pin 1)|
+| SDA | SDA (pin 3)|
+| SCL | SCL (pin 5)|
+| CS  | 3v3 (pin 17)|
+| INT1 | NC |
+| INT2 | NC |
