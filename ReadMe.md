@@ -31,7 +31,7 @@ Get the i2c stuff
 ####Configuring the ADXL345
 I came across a strange error with the breakout board and the i2ctools did not recognise the device. My solution was to connect the `cs` pin to the 3v3 output.
 
-![Schematic](Infrequency_schem.jpg "Schematic")
+![Schematic](./images/Infrequency_schem.jpg "Schematic")
 
 The wiring otherwise involves:
 | ADXL345  | RPi |
