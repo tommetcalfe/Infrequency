@@ -7,13 +7,11 @@ import time
 
 PORT_NUMBER = 8000
 
-class myHandler(BaseHTTPRequestHandler):
-
+class ServerHandler(BaseHTTPRequestHandler):
 	#Handler for the GET requests
 	def do_GET(self):
 		if self.path=="/":
 			self.path="/public/"
-
 		try:
 			#Check the file extension required and
 			#set the right mime type
@@ -44,7 +42,6 @@ class myHandler(BaseHTTPRequestHandler):
 				sendReply = True
 
 			if sendReply == True:
-				#Open the static file requested and send it
 				f = open(curdir + sep + self.path)
 				self.send_response(200)
 				self.send_header('Content-type',mimetype)
@@ -56,12 +53,9 @@ class myHandler(BaseHTTPRequestHandler):
 			self.send_error(404,'File Not Found: %s' % self.path)
 
 try:
-	server = HTTPServer(('', PORT_NUMBER), myHandler)
+	server = HTTPServer(('', PORT_NUMBER), ServerHandler)
 	server.serve_forever()
 	print 'Started Http Server on port ' , PORT_NUMBER
-	# run(server=server)
-	#Wait forever for incoming htto requests
-
 
 except KeyboardInterrupt:
 	print '^C received, shutting down the web server'
