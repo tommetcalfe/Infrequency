@@ -132,29 +132,41 @@ function selectRandomTrack() {
     }
 }
 //-----------------------------------------------------------------
+var websocket = new WebSocket("ws://localhost:8001/ws");
 $(document).ready(function() {
-    // document.myform.url.value = "ws://localhost:8080/"<!-- -->
-    var websocket = new WebSocket("ws://localhost:8001/ws");
+    //-----------------------------------------------------------------
     websocket.onopen = function(evt) {
         console.log("Opened Socket")
-        console.log(evt);
-        websocket.send("Connected")
     };
-    websocket.onclose = function(evt) { console.log("Closed Socket")};
-    websocket.onmessage = function(evt) { console.log("Message from Socket")};
-    websocket.onerror = function(evt) { console.log("Error on Socket")};
+    //-----------------------------------------------------------------
+    websocket.onclose = function(evt) {
+        console.log("Closed Socket")
+    };
+    //-----------------------------------------------------------------
+    websocket.onmessage = function(evt) {
+        console.log(evt.data)
+        if (evt.data == "play") {
+            stateMan.play()
+        }
+        console.log("Message from Socket")
+    };
+    //-----------------------------------------------------------------
+    websocket.onerror = function(evt) {
+        console.log("Error on Socket")
+    };
 
+    //-----------------------------------------------------------------
     setupSoundCloud();
     getTracks("disclosure");
     console.log(soundcloudTracks);
     var trackInfo = "160106800";
-
+    //-----------------------------------------------------------------
     SC.stream("/tracks/"+trackInfo,function(sound){
         console.log(sound);
         stateMan = new StateMan(sound);
         volMan = new VolManager(sound);
     });
-
+    //-----------------------------------------------------------------
     $('#submit').click(function(){
         $('#tracks').empty();
         var str = $("#get").val();

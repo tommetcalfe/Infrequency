@@ -8,7 +8,8 @@ Is an internet of things radio.
 1x Raspberry Pi
 
 ####Dependencies
-pip install gevent flask bottle
+`pip install tornado flask bottle`
+
 
 
 ####Configuring the Pi
