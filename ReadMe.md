@@ -2,22 +2,56 @@ Infrequency
 ===
 
 ####Introduction
-Is an internet of things radio.
+Is an Internet of Things radio.
 
 ####Components
-1x Raspberry Pi
+* 1x Raspberry Pi
+* 1x ADXL345 Accelorometer
+* 1x InfrequencyServer.py
+* 1x InfrequencySensor.py
+* 1x startInfrequency.sh
+* 1x stopInfrequency.sh
 
 ####Dependencies
-`pip install tornado flask bottle`
 
-
+````pip install tornado flask bottle````
 
 ####Configuring the Pi
 
+#####WiFi
 
+You will need to configure the WiFi
 
+First identify the network
+* ````sudo iwlist wlan0 scan````
+
+Make a note of the ESSID name
+* ````sudo nano /etc/wpa_supplicant/wpa_supplicant.conf````
+
+Add the following lines to the config file
+* `network={ssid="ESSID"
+    psk="Your_wifi_password"}`
+
+Reset the network
+* ````sudo ifdown wlan0````
+* ````sudo ifup wlan0````
+* ````sudo reboot````
+
+Once rebooted verify the connection to the WiFi Network
+* ````ifconfig wlan0````
+
+#####Changing the Hostname
+You will need to change the hostname
+* ````sudo nano /etc/hostname````
+
+Save the name then commit the changes
+* ````sudo /etc/init.d/hostname.sh````
+
+Then Reboot
+* ````sudo reboot````
 
 ####Configuring the Pi for the ADXL345
+
 I've borrowed heavily from [Martin O’Hanlon's guide](http://www.stuffaboutcode.com/2014/06/raspberry-pi-adxl345-accelerometer.html).
 
 Add I2C modules
