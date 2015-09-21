@@ -20,6 +20,13 @@ def convertAccelToAngle(x,y,z):
 #    yaw = (math.atan(math.sqrt(x)+math.sqrt(y)/z)*180)/M_PI
     return roll,pitch
 
+#----------------------------------------------------
+# Function to return the degrees from the Accelorometer
+def updateAccel():
+    axes = adxl345.getAxes(False)
+	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
+    print xy
+    time.sleep(0.2)
 # while 1:
 # 	axes = adxl345.getAxes(False)
 # 	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
@@ -72,7 +79,8 @@ application = tornado.web.Application(handlers, **settings)
 
 #----------------------------------------------------
 def main_loop():
-    print "hello"
+    updateAccel()
+    # print "hello"
 
 #----------------------------------------------------
 if __name__ == '__main__':
@@ -80,8 +88,7 @@ if __name__ == '__main__':
     print "ADXL345 on address 0x%x:" % (adxl345.address)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8001)
-    # tornado.ioloop.IOLoop.current().run_sync(WSHandler.play)
-    tornado.ioloop.IOLoop.instance().start()
+    # tornado.ioloop.IOLoop.instance().start()
 
     try:
         main_loop()
