@@ -24,7 +24,7 @@ def convertAccelToAngle(x,y,z):
 # Function to return the degrees from the Accelorometer
 def updateAccel():
     axes = adxl345.getAxes(False)
-	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
+    xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
     print xy
     time.sleep(0.2)
 # while 1:
