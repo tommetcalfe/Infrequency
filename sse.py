@@ -1,32 +1,11 @@
 #!/usr/bin/python
 from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
-import gevent
-# from gevent.wsgi import WSGIServer
-# from gevent.queue import Queue
+
 from flask import Flask, Response
-# from bottle import get, post, request, response,run,GeventServer
-# from gevent import monkey; monkey.patch_all()
 import time
 
 PORT_NUMBER = 8000
-
-# @get('/send')
-# def send():
-# 	response.content_type  = 'text/event-stream'
-# 	response.cache_control = 'no-cache'
-#
-# 	# Set client-side auto-reconnect timeout, ms.
-# 	yield 'retry: 100\n\n'
-#
-# 	n = 1
-#
-# 	# Keep connection alive no more then... (s)
-# 	end = time.time() + 60
-# 	while time.time() < end:
-# 		yield 'data: %i\n\n' % n
-# 		n += 1
-# 		sleep(1)
 
 class myHandler(BaseHTTPRequestHandler):
 
@@ -77,9 +56,6 @@ class myHandler(BaseHTTPRequestHandler):
 			self.send_error(404,'File Not Found: %s' % self.path)
 
 try:
-
-
-
 	server = HTTPServer(('', PORT_NUMBER), myHandler)
 	server.serve_forever()
 	print 'Started Http Server on port ' , PORT_NUMBER
