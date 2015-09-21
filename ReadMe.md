@@ -6,20 +6,26 @@ Is an Internet of Things radio.
 
 ####Components
 * 1x Raspberry Pi
-* 1x ADXL345 Accelorometer
+* 1x ADXL345 Accelerometer
 * 1x InfrequencyServer.py
 * 1x InfrequencySensor.py
-* 1x startInfrequency.sh
+* 1x launchInfrequency.sh
 * 1x stopInfrequency.sh
 
-####Dependencies
-
-````pip install tornado flask bottle````
-
 ####Configuring the Pi
+#####Dependencies
+Infrequency has the following dependencies.
+
+* ````sudo pip install tornado flask bottle matchbox chromium x11-xserver-utils ttf-mscorefonts-installer xwit sqlite3 libnss3 git````
+
+Pull this repo
+* ````git clone https://github.com/DHaylock/Infrequency.git````
+
+Move the `xinitrc` file to the `/home/pi`
+* ````cd Infrequency/ ````
+* ````mv xinitrc ../ ````
 
 #####WiFi
-
 You will need to configure the WiFi
 
 First identify the network
@@ -85,3 +91,5 @@ The wiring otherwise involves:
 | CS  | 3v3 (pin 17) |
 | INT1 | NC |
 | INT2 | NC |
+
+####
