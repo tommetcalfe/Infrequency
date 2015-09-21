@@ -26,7 +26,7 @@ def updateAccel():
     axes = adxl345.getAxes(False)
     xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
     print xy
-    time.sleep(0.2)
+    # time.sleep(0.2)
 # while 1:
 # 	axes = adxl345.getAxes(False)
 # 	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
@@ -79,7 +79,9 @@ application = tornado.web.Application(handlers, **settings)
 
 #----------------------------------------------------
 def main_loop():
-    updateAccel()
+    while True:
+        updateAccel()
+        time.sleep(0.2)
     # print "hello"
 
 #----------------------------------------------------
