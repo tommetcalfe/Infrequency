@@ -53,9 +53,9 @@ class ServerHandler(BaseHTTPRequestHandler):
 			self.send_error(404,'File Not Found: %s' % self.path)
 
 try:
+	print 'Started Http Server on port ' , PORT_NUMBER
 	server = HTTPServer(('', PORT_NUMBER), ServerHandler)
 	server.serve_forever()
-	print 'Started Http Server on port ' , PORT_NUMBER
 
 except KeyboardInterrupt:
 	print '^C received, shutting down the web server'
