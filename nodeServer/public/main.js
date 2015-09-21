@@ -1,8 +1,6 @@
 var soundcloudTracks = [];
-var playedArray = [];
-var trackInfo = "160106800";
-var songName = "";
-//-----------------------------------------------------------------
+var websocket;
+var fading = false;
 function setupSoundCloud() {
     SC.initialize({
         client_id: '004f94bea5f40f3f5efcbd72928c6cfa'
@@ -52,7 +50,7 @@ function StateMan(currentTrack) {
       if (state == "play" ) return;
       state = "play";
       track.play();
-      $("#state").html("Playing: "+songName);
+      $("#state").html("Playing");
     };
 
     // Stop playback if not already stopped
@@ -75,15 +73,19 @@ function StateMan(currentTrack) {
 }
 //-----------------------------------------------------------------
 function getTracks(searchTerm) {
+    // soundcloudTracks = [];
     SC.get('/tracks', { q: searchTerm, limit: 20 }, function(tracks,err) {
         for (var i = 0; i < tracks.length; i++) {
-            var links = $('<div><p id="track'+i+'" style="font-size:8px;">'+i+' <strong>ID</strong>:'+tracks[i].id+' <strong>Title</strong>:'+tracks[i].title+'</p></div>');
+            var links = $('<div><p style="font-size:8px;">'+i+' <strong>ID</strong>:'+tracks[i].id+' <strong>Title</strong>:'+tracks[i].title+'</p></div>');
             // $('#tracks').appendTo(links).hide().slideDown('slow');
             links.appendTo($('#tracks')).hide().slideDown('slow');
 
 
         }
         soundcloudTracks = tracks;
+        // soundcloudTracks = copy(tracks);
+        // }
+        // soundcloudTracks = $.makeArray( tracks );
     });
 }
 //-----------------------------------------------------------------
@@ -96,76 +98,84 @@ function copy(o) {
    }
    return out;
 }
-Array.prototype.contains = function(elem)
-{
-    for (var i in this) {
-        if (this[i] == elem) return true;
-    }
-    return false;
-}
 //-----------------------------------------------------------------
 function selectRandomTrack() {
-    var num = getRandomInt(0,soundcloudTracks.length);
-    console.log(num)
-    console.log(playedArray)
-    if(playedArray.contains(num)) {
-        console.log("Number in array");
-        // num = getRandomInt(0,soundcloudTracks.length);
-        // if(playedArray.contains(num) == false) {
-        //     playedArray.push(num);
-        // }
-    }
-    else {
-        playedArray.push(num);
-    }
-    console.log(playedArray)
-
-    trackInfo = soundcloudTracks[num].id;
-    songName = soundcloudTracks[num].title;
-    for(var i = 0; i < soundcloudTracks.length; i++) {
-        if(i == num) {
-            $('#track'+i).css('color','red');
-        }
-        else {
-            $('#track'+i).css('color','black');
-        }
-    }
-
-
-    console.log(trackInfo);
-    SC.stream("/tracks/"+trackInfo,function(sound){
-        stateMan = new StateMan(sound);
-        volMan = new VolManager(sound);
-    });
+    soundcloudTracks
 }
-//-----------------------------------------------------------------
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-//-----------------------------------------------------------------
-function updateStats(data) {
-    console.log(data);
-}
+// var wsUri = "ws://localhost:8081";
+// var output;
+// function init() {
+//     output = document.getElementById("output");
+//     testWebSocket();
+// }
+//
+// function testWebSocket()
+// {
+//     websocket = new WebSocket(wsUri);
+//     websocket.onopen = function(evt) { onOpen(evt) };
+//     websocket.onclose = function(evt) { onClose(evt) };
+//     websocket.onmessage = function(evt) { onMessage(evt) };
+//     websocket.onerror = function(evt) { onError(evt) }; }
+//     function onOpen(evt) { writeToScreen("CONNECTED");
+//     doSend("WebSocket rocks");
+// }
+//     function onClose(evt) { writeToScreen("DISCONNECTED"); }
+//     function onMessage(evt) { writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>'); websocket.close(); }
+//     function onError(evt) { writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data); }
+//     function doSend(message) { writeToScreen("SENT: " + message);  websocket.send(message); }
+//     function writeToScreen(message) { var pre = document.createElement("p"); pre.style.wordWrap = "break-word"; pre.innerHTML = message; output.appendChild(pre); }
+//
+//     window.addEventListener("load", init, false);
+
 //-----------------------------------------------------------------
 $(document).ready(function() {
+    // document.myform.url.value = "ws://localhost:8080/"<!-- -->
+    // websocket = new WebSocket("ws://localhost:9999/");
+    // websocket.onopen = function(evt) { console.log("Opened Socket")};
+    // websocket.onclose = function(evt) { console.log("Closed Socket")};
+    // websocket.onmessage = function(evt) { console.log("Message from Socket")};
+    // websocket.onerror = function(evt) { console.log("Error on Socket")};
+//     var ws = new WebSocket("ws://localhost:8080");
+//     ws.onopen = function() {
+//       ws.send("Hello Mr. Server!");
+//     };
+//     ws.onmessage = function (e) {
+//         console.log(e.data);
+//     };
+//     // ws.onclose = function() {
+//     //
+//     // };
+//     if(ws){
+//     ws.send("tes");
+// }
 
     setupSoundCloud();
     getTracks("disclosure");
+    console.log(soundcloudTracks);
+    var trackInfo = "160106800";
 
-    var es = new EventSource("http://localhost:8080/some/path");
-    es.onopen = function (event) {
-        console.log("opened");
+    var source = new EventSource("http://localhost:8081/debug");
+    source.onmessage = function(event) {
+        console.log(event.data);
+        console.log('debug');
     };
-    es.onmessage = function (event) {
-        updateStats(event);
+
+    var source1 = new EventSource("http://localhost:8081/publish");
+    source1.onmessage = function(event) {
+        console.log(event.data);
+        console.log('publish');
     };
+
+    SC.stream("/tracks/"+trackInfo,function(sound){
+        console.log(sound);
+        stateMan = new StateMan(sound);
+        volMan = new VolManager(sound);
+    });
 
     $('#submit').click(function(){
-        console.log("Emptying Tracks");
         $('#tracks').empty();
         var str = $("#get").val();
-        console.log("You've searched for: " + str);
-        console.log("Getting New Tracks");
         getTracks(str);
+        console.log(soundcloudTracks);
     });
 });

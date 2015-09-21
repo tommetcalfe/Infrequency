@@ -7,7 +7,13 @@ Is an internet of things radio.
 ####Components
 1x Raspberry Pi
 
+####Dependencies
+pip install gevent flask bottle
+
+
 ####Configuring the Pi
+
+
 
 
 ####Configuring the Pi for the ADXL345
