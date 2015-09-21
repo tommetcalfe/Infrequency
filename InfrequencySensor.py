@@ -81,7 +81,7 @@ if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8001)
     print "Opening Websocket"
-    # tornado.ioloop.IOLoop.instance().start()
+    tornado.ioloop.IOLoop.instance().start()
 
     try:
         main_loop()
