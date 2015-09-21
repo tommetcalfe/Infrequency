@@ -6,12 +6,12 @@ import tornado.web
 import time
 import datetime
 import time
+import sys
 from adxl345 import ADXL345
 import math
 
 M_PI = 3.141592
 adxl345 = ADXL345()
-
 #----------------------------------------------------
 # Function to return the degrees from the Accelorometer
 def convertAccelToAngle(x,y,z):
@@ -26,17 +26,7 @@ def updateAccel():
     axes = adxl345.getAxes(False)
     xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
     print xy
-    # time.sleep(0.2)
-# while 1:
-# 	axes = adxl345.getAxes(False)
-# 	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
-# 	print xy
 # 	if xy[0] > -10.000 and xy[0] < 10.000:
-# 		print "settled"
-# 	else:
-# 		print "argh"
-# 	time.sleep(0.2)
-
 
 #-----------------------------------------------------------------
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -90,7 +80,8 @@ if __name__ == '__main__':
     print "ADXL345 on address 0x%x:" % (adxl345.address)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8001)
-    # tornado.ioloop.IOLoop.instance().start()
+    print "Opening Websocket"
+    tornado.ioloop.IOLoop.instance().start()
 
     try:
         main_loop()
