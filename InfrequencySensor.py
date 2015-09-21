@@ -36,7 +36,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print 'New Connection'
         self.write_message("Hello, we've opened and Connected to you")
-        # tornado.ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=1), self.play)
+        tornado.ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=1), self.play)
 
     def on_message(self, message):
         print 'Message received: \"%s\"' % message
@@ -80,8 +80,8 @@ if __name__ == '__main__':
     print "ADXL345 on address 0x%x:" % (adxl345.address)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8001)
-    tornado.ioloop.IOLoop.current().run_sync(WSHandler.play)
-    # tornado.ioloop.IOLoop.instance().start()
+    # tornado.ioloop.IOLoop.current().run_sync(WSHandler.play)
+    tornado.ioloop.IOLoop.instance().start()
 
     try:
         main_loop()
