@@ -2,7 +2,7 @@ var soundcloudTracks = [];
 var websocket;
 var fading = false;
 var playedArray = [];
-var trackInfo = ""
+var trackInfo = "93555520"
 
 function setupSoundCloud() {
     SC.initialize({
@@ -172,7 +172,12 @@ $(document).ready(function() {
     //-----------------------------------------------------------------
     setupSoundCloud();
     getTracks("disclosure");
-    selectRandomTrack();
+    // selectRandomTrack();
+    SC.stream("/tracks/"+trackInfo,function(sound){
+        console.log(sound);
+        stateMan = new StateMan(sound);
+        volMan = new VolManager(sound);
+    });
 
     //-----------------------------------------------------------------
     $('#submit').click(function(){

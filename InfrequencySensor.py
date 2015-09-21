@@ -25,15 +25,14 @@ def convertAccelToAngle(x,y,z):
 def updateAccel():
     axes = adxl345.getAxes(False)
     xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
-    print xy
-# 	if xy[0] > -10.000 and xy[0] < 10.000:
+    return xy
 
 #-----------------------------------------------------------------
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print 'New Connection'
         self.write_message("Hello, we've opened and Connected to you")
-        tornado.ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=1), self.play)
+        # tornado.ioloop.IOLoop.instance().add_timeout(datetime.timedelta(seconds=5), self.play)
 
     def on_message(self, message):
         print 'Message received: \"%s\"' % message
@@ -56,6 +55,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def checkLeftb(self):
         self.write_message("play")
+
 #-----------------------------------------------------------------
 handlers = [
     (r'/ws', WSHandler),
@@ -70,18 +70,19 @@ application = tornado.web.Application(handlers, **settings)
 #----------------------------------------------------
 def main_loop():
     while True:
-        updateAccel()
+        orientation = updateAccel()
+        # 	if xy[0] > -10.000 and xy[0] < 10.000:
+        print orientation
         time.sleep(0.2)
     # print "hello"
 
 #----------------------------------------------------
 if __name__ == '__main__':
-
     print "ADXL345 on address 0x%x:" % (adxl345.address)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8001)
     print "Opening Websocket"
-    tornado.ioloop.IOLoop.instance().start()
+    # tornado.ioloop.IOLoop.instance().start()
 
     try:
         main_loop()
