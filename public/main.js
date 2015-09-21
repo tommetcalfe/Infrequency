@@ -2,6 +2,7 @@ var soundcloudTracks = [];
 var websocket;
 var fading = false;
 var playedArray = [];
+var trackInfo = ""
 
 function setupSoundCloud() {
     SC.initialize({
@@ -109,27 +110,34 @@ function copy(o) {
 //-----------------------------------------------------------------
 function selectRandomTrack() {
     var num = getRandomInt(0,soundcloudTracks.length);
-        console.log(num)
-        console.log(playedArray)
-        if(playedArray.contains(num)) {
-            console.log("Number in array");
+    // console.log(num)
+    // console.log(playedArray)
+    if(playedArray.contains(num)) {
+        console.log("Number in array");
+    }
+    else {
+        playedArray.push(num);
+    }
+    // console.log(playedArray)
+
+    trackInfo = soundcloudTracks[num].id;
+    console.log(trackInfo)
+    songName = soundcloudTracks[num].title;
+    for(var i = 0; i < soundcloudTracks.length; i++) {
+        if(i == num) {
+            $('#track'+i).css('color','red');
+            $('#track'+i).css('text-decoration', 'line-through');
         }
         else {
-            playedArray.push(num);
+            $('#track'+i).css('color','black');
         }
-        console.log(playedArray)
-
-        trackInfo = soundcloudTracks[num].id;
-        songName = soundcloudTracks[num].title;
-        for(var i = 0; i < soundcloudTracks.length; i++) {
-            if(i == num) {
-                $('#track'+i).css('color','red');
-                $('#track'+i).css('text-decoration', 'line-through');
-            }
-            else {
-                $('#track'+i).css('color','black');
-            }
     }
+    //-----------------------------------------------------------------
+    SC.stream("/tracks/"+trackInfo,function(sound){
+        console.log(sound);
+        stateMan = new StateMan(sound);
+        volMan = new VolManager(sound);
+    });
 }
 //-----------------------------------------------------------------
 var websocket = new WebSocket("ws://localhost:8001/ws");
@@ -145,7 +153,13 @@ $(document).ready(function() {
     //-----------------------------------------------------------------
     websocket.onmessage = function(evt) {
         console.log(evt.data)
+        if (evt.data == "stop") {
+            console.log("Stopping")
+            stateMan.stop()
+        }
+
         if (evt.data == "play") {
+            console.log("Playing")
             stateMan.play()
         }
         console.log("Message from Socket")
@@ -158,19 +172,14 @@ $(document).ready(function() {
     //-----------------------------------------------------------------
     setupSoundCloud();
     getTracks("disclosure");
-    console.log(soundcloudTracks);
-    var trackInfo = "160106800";
-    //-----------------------------------------------------------------
-    SC.stream("/tracks/"+trackInfo,function(sound){
-        console.log(sound);
-        stateMan = new StateMan(sound);
-        volMan = new VolManager(sound);
-    });
+    selectRandomTrack();
+
     //-----------------------------------------------------------------
     $('#submit').click(function(){
         $('#tracks').empty();
         var str = $("#get").val();
         getTracks(str);
         console.log(soundcloudTracks);
+        selectRandomTrack();
     });
 });
