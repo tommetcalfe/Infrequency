@@ -80,7 +80,7 @@ if __name__ == '__main__':
     print "ADXL345 on address 0x%x:" % (adxl345.address)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8001)
-    tornado.ioloop.current().run_sync(WSHandler.play)
+    tornado.ioloop..IOLoop.current().run_sync(WSHandler.play)
     # tornado.ioloop.IOLoop.instance().start()
 
     try:
