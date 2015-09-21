@@ -177,6 +177,7 @@ $(document).ready(function() {
         console.log(sound);
         stateMan = new StateMan(sound);
         volMan = new VolManager(sound);
+        stateMan.play()
     });
 
     //-----------------------------------------------------------------
