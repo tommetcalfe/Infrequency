@@ -74,7 +74,7 @@ def main_loop():
         orientation = updateAccel()
         # 	if xy[0] > -10.000 and xy[0] < 10.000:
         print orientation
-        time.sleep(0.2)
+        time.sleep(0.1)
     # print "hello"
 
 #----------------------------------------------------
