@@ -1,7 +1,10 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
+
+#-------------------------------------------------------
+# Import Libraries
 import string
-#import random
-#from random import shuffle
+import random
+from random import shuffle
 import sys
 import datetime
 import math
@@ -9,52 +12,39 @@ import httplib,urllib
 import json
 import os
 import sys
-
 import urllib2
-contents = urllib2.urlopen("https://itunes.apple.com/search?term=gardening&entity=podcast").read()
-
-print contents
-
-#
-#import soundcloud
-#
-#
-#M_PI = 3.141592
-#
-#clientID = os.system("cat id.txt")
-## create a client object with your app credentials
-#client = soundcloud.Client(client_id="fe503f838868c2301b391f1877716edd")
-##streamURLClient = client
-#
-#print clientID
-#
-## Function to return the degrees from the Accelorometer
-#def convertAccelToAngle(x,y,z):
-#    roll = (math.atan2(-y,z)*180)/M_PI
-#    pitch = (math.atan2(x,math.sqrt(y*y + z*z))*180)/M_PI
-#    # yaw = (math.atan(math.sqrt(x)+math.sqrt(y)/z)*180)/M_PI
-#    print roll
-#    print pitch
-#
-#
-#
-## convertAccelToAngle(0.0,0.0,0.0)
+from xml.dom.minidom import parse
+import xml.dom.minidom
 
 
+podcastArray = []
 
-#
-#import soundcloud
-#
-## create a client object with your app credentials
-#client = soundcloud.Client(client_id='fe503f838868c2301b391f1877716edd')
-#
-## find all sounds of buskers licensed under 'creative commons share alike'
-#tracks = client.get('/tracks',query='gardening')
-#
-#for track in tracks:
-#    newURL = client.get(track.stream_url,allow_redirects=False)
-#    print "------------------------"
-#    print track.title
-#    print newURL.location
-#
-#print "------------------------"
+#-------------------------------------------------------
+# Setup Proceedures
+#-------------------------------------------------------
+def getPodcastList(searchTerm):
+    response = urllib2.urlopen("https://itunes.apple.com/search?term="+searchTerm+"&entity=podcast").read()
+    print response
+
+#-------------------------------------------------------
+def getMP3Lists():
+    print "-------------------------------------------------------"
+    print "Getting List"
+    u = urllib2.urlopen('http://www.gardenerd.com/Podcasts/Gardenerd_Podcasts.xml')
+    localFile = open('mp3s.xml','w')
+    localFile.write(u.read())
+    localFile.close()
+    print "-------------------------------------------------------"
+
+    # Open XML document using minidom parser
+    DOMTree = xml.dom.minidom.parse("mp3s.xml")
+    collection = DOMTree.documentElement
+    if collection.hasAttribute("channel"):
+       print "Root element : %s" % collection.getAttribute("shelf")
+
+    # Get all the movies in the collection
+    # movies = collection.getElementsByTagName("movie")
+    # print parser
+
+# getPodcastList("gardening")
+getMP3Lists()
