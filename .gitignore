@@ -1,6 +1,7 @@
 soundcloud/
 tidehunter/
 *.txt
+*.xml
 py-vlcclient/
 vlc-python/
 vlcclient.py
