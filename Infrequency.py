@@ -32,6 +32,7 @@ from pyomxplayer import OMXPlayer
 from adxl345 import ADXL345
 
 GPIO.setmode(GPIO.BCM)
+GPIO.setup(18,GPIO.OUTPUT)
 TERMIOS = termios
 podcastArray = []
 podcastTitleArray = []
@@ -195,6 +196,6 @@ if __name__ == '__main__':
     try:
         main_loop()
     except KeyboardInterrupt:
-        GPIO.output(18,False)
+        GPIO.output(18,Falseå)
         print >> sys.stderr, '\nExiting by User Request.\n'
         sys.exit(0)
