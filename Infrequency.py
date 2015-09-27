@@ -164,7 +164,7 @@ def playNewTrack():
 def convertAccelToAngle(x,y,z):
     roll = (math.atan2(-y,z)*180)/M_PI
     pitch = (math.atan2(x,math.sqrt(y*y + z*z))*180)/M_PI
-    return roll,pitch
+    return int(roll),int(pitch)
 
 #-------------------------------------------------------
 def main_loop():
