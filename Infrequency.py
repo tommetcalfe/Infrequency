@@ -174,7 +174,7 @@ def main_loop():
         print "   x = %.3fG" % ( axes['x'] )
         print "   y = %.3fG" % ( axes['y'] )
         print "   z = %.3fG" % ( axes['z'] )
-        time.sleep(0.5)
+        time.sleep(0.1)
         # c = getkey()
         # if c == 'g':
         #     getNewMP3s()
