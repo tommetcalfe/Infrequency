@@ -26,6 +26,7 @@ import time
 import getopt
 import termios
 import os
+import subprocess
 
 TERMIOS = termios
 podcastArray = []
@@ -33,6 +34,8 @@ podcastTitleArray = []
 podcastMP3Array = []
 query = ""
 M_PI = 3.141592
+
+
 
 #-------------------------------------------------------
 #  Fancy Stuff
@@ -129,7 +132,7 @@ def getNewMP3s():
 #
 #-------------------------------------------------------
 def stopTrack():
-    os.stdin.write('q')
+    # track.stdin.write('q')
     print "Stop the Track"
 
 #-------------------------------------------------------
@@ -137,9 +140,14 @@ def stopTrack():
 # the array so its not played again
 #-------------------------------------------------------
 def playNewTrack():
+    global track
     if len(podcastMP3Array) > 0:
         randomMP3 = random.randint(0,len(podcastMP3Array)-1)
         print "Play " + podcastMP3Array[randomMP3]
+
+        track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
+        time.sleep(5)
+        track.stdin.write('q')
         del podcastMP3Array[randomMP3]
     else:
         print "No more tracks ... Getting a new playlist!"
