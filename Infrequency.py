@@ -13,9 +13,8 @@ import json
 import os
 import sys
 import urllib2
-from xml.dom.minidom import parse
-import xml.dom.minidom
-
+import podcastparser
+import pprint
 
 podcastArray = []
 
@@ -35,16 +34,10 @@ def getMP3Lists():
     localFile.write(u.read())
     localFile.close()
     print "-------------------------------------------------------"
+    parsed = podcastparser.parse("http://www.gardenerd.com/Podcasts/Gardenerd_Podcasts.xml", urllib.urlopen("http://www.gardenerd.com/Podcasts/Gardenerd_Podcasts.xml"))
 
-    # Open XML document using minidom parser
-    DOMTree = xml.dom.minidom.parse("mp3s.xml")
-    collection = DOMTree.documentElement
-    if collection.hasAttribute("channel"):
-       print "Root element : %s" % collection.getAttribute("shelf")
+    for i in range(len(parsed)):
+        podcastArray.append(parsed['episodes'][i]['guid'])
 
-    # Get all the movies in the collection
-    # movies = collection.getElementsByTagName("movie")
-    # print parser
-
-# getPodcastList("gardening")
 getMP3Lists()
+print podcastArray
