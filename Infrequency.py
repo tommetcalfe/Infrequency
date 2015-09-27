@@ -32,7 +32,7 @@ from pyomxplayer import OMXPlayer
 from adxl345 import ADXL345
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18,GPIO.OUTPUT)
+GPIO.setup(18,GPIO.OUT)
 TERMIOS = termios
 podcastArray = []
 podcastTitleArray = []
