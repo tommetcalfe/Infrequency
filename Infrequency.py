@@ -39,6 +39,8 @@ podcastMP3Array = []
 query = ""
 M_PI = 3.141592
 adxl345 = ADXL345()
+playLatch = False
+stopLatch = False
 
 
 #-------------------------------------------------------
@@ -171,11 +173,12 @@ def main_loop():
     while 1:
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
-        # print xy
-        if xy[1] > 60:
+        print xy
+        if xy[1] > 60 & !playLatch:
             print "hello there"
+            playLatch = True
 
-        time.sleep(0.05)
+        time.sleep(0.1)
 
         # c = getkey()
         # if c == 'g':
