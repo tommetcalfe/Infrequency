@@ -150,7 +150,6 @@ def playNewTrack():
     if len(podcastMP3Array) > 0:
         randomMP3 = random.randint(0,len(podcastMP3Array)-1)
         print "Play " + podcastMP3Array[randomMP3]
-        omx = OMXPlayer(podcastMP3Array[randomMP3])
         track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
         del podcastMP3Array[randomMP3]
     else:
