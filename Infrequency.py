@@ -171,13 +171,13 @@ def main_loop():
         if xy[1] > 80:
             if len(podcastMP3Array) > 0:
                 stopTrack()
-                time.sleep(1)
+                time.sleep(2)
                 playNewTrack()
             else:
+                stopTrack()
                 print "No more tracks ... Getting a new playlist!"
                 getNewMP3s()
-                stopTrack()
-                time.sleep(1)
+                time.sleep(2)
                 playNewTrack()
 
         time.sleep(0.1)
