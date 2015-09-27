@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 
 #-------------------------------------------------------
+# * Project: Infrequency
+# * File: Infrequency.py
+# * Author: David Haylock
+# * Creation Date: 27-09-2015
+# * Copyright: (c) 2015 by David Haylock and Tom Metcalfe
+#-------------------------------------------------------
+
 # Import Libraries
 import string
 import random
@@ -17,69 +24,150 @@ import podcastparser
 import pprint
 import time
 import getopt
+import termios
 
+TERMIOS = termios
 podcastArray = []
-query = "gardening"
+podcastTitleArray = []
+podcastMP3Array = []
+query = ""
+M_PI = 3.141592
 
+#-------------------------------------------------------
+#  Fancy Stuff
+#-------------------------------------------------------
+print "-------------------------------------------------------"
+print """ _       ___
+| |._ _ | | '_ _  ___  ___  _ _  ___ ._ _  ___  _ _
+| || ' || |-| '_>/ ._>/ . || | |/ ._>| ' |/ | '| | |
+|_||_|_||_| |_|  \___.\_  |`___|\___.|_|_|\_|_.`_. |
+                        |_|                    <___'"""
 
-# def setupSearch(argv):
-#     try:
-#         opts, args = getopt(argv,"hi:o",["term="])
-#     except getopt.GetoptError:
-#         print 'Infrequency.py -q <your query>'
-#         sys.exit(2)
-#
-#     for opt, arg in opts:
-#         if opt == '-h':
-#             print 'test.py -q <your query>'
-#             sys.exit()
-#         elif opt in ("-q", "--term"):
-#             query = arg
-#             print query
+#-------------------------------------------------------
+#  Get new Query from Command Line interface
+#-------------------------------------------------------
+myopts, args = getopt.getopt(sys.argv[1:],"q:a")
+for o, a in myopts:
+    if o == '-q':
+        query = a
+    else:
+        query = "gardening"
 
+#----------------------------------------------------
+# Function to get keys
+#----------------------------------------------------
+def getkey():
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    new = termios.tcgetattr(fd)
+    new[3] = new[3] & ~TERMIOS.ICANON & ~TERMIOS.ECHO
+    new[6][TERMIOS.VMIN] = 1
+    new[6][TERMIOS.VTIME] = 0
+    termios.tcsetattr(fd, TERMIOS.TCSANOW, new)
+    c = None
+    try:
+            c = os.read(fd, 1)
+    finally:
+            termios.tcsetattr(fd, TERMIOS.TCSAFLUSH, old)
+    return c
 
 #-------------------------------------------------------
 # Setup Proceedures
 #-------------------------------------------------------
 def getPodcastList(searchTerm):
+    print "-------------------------------------------------------"
     resource_url = "https://itunes.apple.com/search?term="+searchTerm+"&entity=podcast"
+    print "Looking for " + resource_url
     response = json.loads(urllib2.urlopen(resource_url).read())
     tidy = json.dumps(response,indent=1)
     numberOfResults = response['resultCount']
-    print numberOfResults
-    for i in range(numberOfResults):
-        print "-------------------------"+str(i)+"------------------------------"
-        print "Podcast Name: " + response['results'][i]['collectionName']
-        print "Podcast Feed: " + response['results'][i]['feedUrl']
-    # print tidy
-    # print response
 
+    for i in range(numberOfResults):
+        podcastTitleArray.append(response['results'][i]['collectionName'])
+        podcastArray.append(response['results'][i]['feedUrl'])
+
+    print "Found " + str(numberOfResults) + " results"
+
+#----------------------------------------------------
+# As it sounds gets the MP3 urls from the podcastArray[val]
 #-------------------------------------------------------
 def getMP3Lists(podcastURL):
     print "-------------------------------------------------------"
-    print "Getting List"
-    u = urllib2.urlopen('http://www.gardenerd.com/Podcasts/Gardenerd_Podcasts.xml')
+    print "Getting MP3 Links"
+    u = urllib2.urlopen(podcastURL)
+
+    # Save the output to the xml file
     localFile = open('mp3s.xml','w')
     localFile.write(u.read())
     localFile.close()
     print "-------------------------------------------------------"
-    parsed = podcastparser.parse("http://6ftmama.com/feed/podcast/", urllib.urlopen("http://6ftmama.com/feed/podcast/"))
-    # print parsed
+    del podcastMP3Array[:]
+
+    # Parse the content through podcastparser
+    parsed = podcastparser.parse(podcastURL, urllib.urlopen(podcastURL))
+    print "Found: " + str(len(parsed))
     for i in range(len(parsed)):
-        podcastArray.append(parsed['episodes'][i]['enclosures'][0]['url'])
+        podcastMP3Array.append(parsed['episodes'][i]['enclosures'][0]['url'])
+        print "         "+parsed['episodes'][i]['enclosures'][0]['url']
+
+
+    print "-------------------------------------------------------"
+
+#-------------------------------------------------------
+def getNewMP3s():
+    randomNumber = 0
+    if len(podcastArray) > 0:
+        randomNumber = random.randint(0,len(podcastArray)-1)
+
+    print "-------------------------------------------------------"
+    print "Podcast Title: " + podcastTitleArray[randomNumber]
+    print "Podcast RSS: " + podcastArray[randomNumber]
+    getMP3Lists(podcastURL=podcastArray[randomNumber])
+
+#-------------------------------------------------------
+#
+#-------------------------------------------------------
+def stopTrack():
+    print "Stop the Track"
+
+#-------------------------------------------------------
+# Plays new track at random then deletes the track from
+# the array so its not played again
+#-------------------------------------------------------
+def playNewTrack():
+    if len(podcastMP3Array) > 0:
+        randomMP3 = random.randint(0,len(podcastMP3Array)-1)
+        print "Play " + podcastMP3Array[randomMP3]
+        del podcastMP3Array[randomMP3]
+    else:
+        print "No more tracks ... Getting a new playlist!"
+        getNewMP3s()
+
+#-------------------------------------------------------
+# Function to return the degrees from the Accelorometer
+#-------------------------------------------------------
+def convertAccelToAngle(x,y,z):
+    roll = (math.atan2(-y,z)*180)/M_PI
+    pitch = (math.atan2(x,math.sqrt(y*y + z*z))*180)/M_PI
+    print roll
+    print pitch
 
 #-------------------------------------------------------
 def main_loop():
     while 1:
-        print "hello"
-        time.sleep(0.3)
+        c = getkey()
+        if c == 'g':
+            getNewMP3s()
+        if c == 'p':
+            stopTrack()
+            time.sleep(1)
+            playNewTrack()
 
 #-------------------------------------------------------
 if __name__ == '__main__':
-    # getPodcastList(query)
-    # setupSearch(sys.argv[1:])
-    getMP3Lists()
-    print podcastArray
+    # Do once on launch though with buttons could reconfigure results
+    getPodcastList(query)
+
     try:
         main_loop()
     except KeyboardInterrupt:
