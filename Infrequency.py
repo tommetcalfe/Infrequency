@@ -25,6 +25,7 @@ import pprint
 import time
 import getopt
 import termios
+import os
 
 TERMIOS = termios
 podcastArray = []
@@ -128,6 +129,7 @@ def getNewMP3s():
 #
 #-------------------------------------------------------
 def stopTrack():
+    os.stdin.write('q')
     print "Stop the Track"
 
 #-------------------------------------------------------
