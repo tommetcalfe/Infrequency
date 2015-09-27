@@ -13,7 +13,7 @@ Is an Internet of Things radio. When you tilt the radio it plays a song.
 #####Dependencies
 Infrequency has the following dependencies.
 
-* ````sudo pip install omxplayer feedparser ````
+* ````sudo pip install omxplayer feedparser podcastparser ````
 
 #####WiFi
 You will need to configure the WiFi
