@@ -136,9 +136,7 @@ def getNewMP3s():
 #
 #-------------------------------------------------------
 def stopTrack():
-    # omx.stop()
     os.system('pkill omx')
-    # track.stdin.write('q')
     print "Stop the Track"
 
 #-------------------------------------------------------
@@ -147,14 +145,14 @@ def stopTrack():
 #-------------------------------------------------------
 def playNewTrack():
     global track
-    if len(podcastMP3Array) > 0:
-        randomMP3 = random.randint(0,len(podcastMP3Array)-1)
-        print "Play " + podcastMP3Array[randomMP3]
-        track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
-        del podcastMP3Array[randomMP3]
-    else:
-        print "No more tracks ... Getting a new playlist!"
-        getNewMP3s()
+    # if len(podcastMP3Array) > 0:
+    randomMP3 = random.randint(0,len(podcastMP3Array)-1)
+    print "Play " + podcastMP3Array[randomMP3]
+    track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
+    del podcastMP3Array[randomMP3]
+    # else:
+        # print "No more tracks ... Getting a new playlist!"
+        # getNewMP3s()
 
 #-------------------------------------------------------
 # Function to return the degrees from the Accelorometer
@@ -169,21 +167,20 @@ def main_loop():
     while 1:
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
-        print xy
-        if xy[1] > 80:
-            stopTrack()
-            time.sleep(1)
-            playNewTrack()
+        # print xy
+        if xy[1] > 80 | xy[1] < 40:
+            if len(podcastMP3Array) > 0:
+                stopTrack()
+                time.sleep(1)
+                playNewTrack()
+            else:
+                print "No more tracks ... Getting a new playlist!"
+                getNewMP3s()
+                stopTrack()
+                time.sleep(1)
+                playNewTrack()
 
         time.sleep(0.1)
-
-        # c = getkey()
-        # if c == 'g':
-        #     getNewMP3s()
-        # if c == 'p':
-        #     # stopTrack()
-        #     time.sleep(1)
-        #     playNewTrack()
 
 #-------------------------------------------------------
 if __name__ == '__main__':
