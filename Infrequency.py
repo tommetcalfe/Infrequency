@@ -170,7 +170,7 @@ def main_loop():
     while 1:
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
-        # print xy
+        print xy
         if xy[1] > 80:
             if len(podcastMP3Array) > 0:
                 stopTrack()
