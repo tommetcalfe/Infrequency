@@ -171,7 +171,7 @@ def main_loop():
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
         print xy
-        if xy[1] > 20 | xy[1] < -60:
+        if xy[1] > 20:
             if len(podcastMP3Array) > 0:
                 stopTrack()
                 time.sleep(2)
@@ -182,6 +182,18 @@ def main_loop():
                 getNewMP3s()
                 time.sleep(2)
                 playNewTrack()
+        elif xy[1] < -60:
+            if len(podcastMP3Array) > 0:
+                stopTrack()
+                time.sleep(2)
+                playNewTrack()
+            else:
+                stopTrack()
+                print "No more tracks ... Getting a new playlist!"
+                getNewMP3s()
+                time.sleep(2)
+                playNewTrack()
+
 
         time.sleep(0.1)
 
