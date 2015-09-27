@@ -136,7 +136,7 @@ def getNewMP3s():
 #
 #-------------------------------------------------------
 def stopTrack():
-    omx.stop()
+    # omx.stop()
     # track.stdin.write('q')
     print "Stop the Track"
 
@@ -174,7 +174,14 @@ def main_loop():
         print "   x = %.3fG" % ( axes['x'] )
         print "   y = %.3fG" % ( axes['y'] )
         print "   z = %.3fG" % ( axes['z'] )
-        time.sleep(0.1)
+
+        if axes['z'] < -0.4 || axes['z'] > 0.1:
+            stopTrack()
+
+        if axes['z'] > -0.4 || axes['z'] < 0.1:
+            print "settled"
+
+        time.sleep(0.2)
         # c = getkey()
         # if c == 'g':
         #     getNewMP3s()
