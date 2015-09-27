@@ -29,7 +29,7 @@ import os
 import subprocess
 from pyomxplayer import OMXPlayer
 
-omx = OMXPlayer
+global omx
 TERMIOS = termios
 podcastArray = []
 podcastTitleArray = []
