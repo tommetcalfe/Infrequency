@@ -28,6 +28,8 @@ import termios
 import os
 import subprocess
 from pyomxplayer import OMXPlayer
+from adxl345 import ADXL345
+
 
 global omx
 TERMIOS = termios
@@ -36,7 +38,7 @@ podcastTitleArray = []
 podcastMP3Array = []
 query = ""
 M_PI = 3.141592
-
+adxl345 = ADXL345()
 
 
 #-------------------------------------------------------
@@ -168,17 +170,23 @@ def convertAccelToAngle(x,y,z):
 #-------------------------------------------------------
 def main_loop():
     while 1:
-        c = getkey()
-        if c == 'g':
-            getNewMP3s()
-        if c == 'p':
-            # stopTrack()
-            time.sleep(1)
-            playNewTrack()
+        axes = adxl345.getAxes(True)
+        print "   x = %.3fG" % ( axes['x'] )
+        print "   y = %.3fG" % ( axes['y'] )
+        print "   z = %.3fG" % ( axes['z'] )
+        time.sleep(0.5)
+        # c = getkey()
+        # if c == 'g':
+        #     getNewMP3s()
+        # if c == 'p':
+        #     # stopTrack()
+        #     time.sleep(1)
+        #     playNewTrack()
 
 #-------------------------------------------------------
 if __name__ == '__main__':
     # Do once on launch though with buttons could reconfigure results
+    print "ADXL345 on address 0x%x:" % (adxl345.address)
     getPodcastList(query)
 
     try:
