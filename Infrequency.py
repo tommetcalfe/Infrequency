@@ -174,7 +174,7 @@ def main_loop():
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
         print xy
-        if xy[1] > 60 & playLatch == False:
+        if xy[1] > 70 & playLatch == False:
             print "hello there"
             playLatch = True
 
