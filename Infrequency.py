@@ -30,8 +30,6 @@ import subprocess
 from pyomxplayer import OMXPlayer
 from adxl345 import ADXL345
 
-
-global omx
 TERMIOS = termios
 podcastArray = []
 podcastTitleArray = []
@@ -139,6 +137,7 @@ def getNewMP3s():
 #-------------------------------------------------------
 def stopTrack():
     # omx.stop()
+    os.system('pkill omx')
     # track.stdin.write('q')
     print "Stop the Track"
 
@@ -152,9 +151,7 @@ def playNewTrack():
         randomMP3 = random.randint(0,len(podcastMP3Array)-1)
         print "Play " + podcastMP3Array[randomMP3]
         omx = OMXPlayer(podcastMP3Array[randomMP3])
-        # track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
-        # time.sleep(5)
-        # track.stdin.write('q')
+        track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
         del podcastMP3Array[randomMP3]
     else:
         print "No more tracks ... Getting a new playlist!"
@@ -174,9 +171,10 @@ def main_loop():
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
         print xy
-        if xy[1] > 70 & playLatch == False:
-            print "hello there"
-            playLatch = True
+        if xy[1] > 70:
+            stopTrack()
+            time.sleep(0.5)
+            playNewTrack()
 
         time.sleep(0.1)
 
@@ -193,6 +191,8 @@ if __name__ == '__main__':
     # Do once on launch though with buttons could reconfigure results
     print "ADXL345 on address 0x%x:" % (adxl345.address)
     getPodcastList(query)
+    time.sleep(1)
+    getNewMP3s()
 
     try:
         main_loop()
