@@ -50,7 +50,7 @@ print """ _       ___
 | || ' || |-| '_>/ ._>/ . || | |/ ._>| ' |/ | '| | |
 |_||_|_||_| |_|  \___.\_  |`___|\___.|_|_|\_|_.`_. |
                         |_|                    <___'"""
-
+print "-------------------------------------------------------"
 #-------------------------------------------------------
 #  Get new Query from Command Line interface
 #-------------------------------------------------------
@@ -83,7 +83,7 @@ def getkey():
 # Setup Proceedures
 #-------------------------------------------------------
 def getPodcastList(searchTerm):
-    print "-------------------------------------------------------"
+    # print "-------------------------------------------------------"
     resource_url = "https://itunes.apple.com/search?term="+searchTerm+"&entity=podcast"
     print "Looking for " + resource_url
     response = json.loads(urllib2.urlopen(resource_url).read())
@@ -171,8 +171,12 @@ def main_loop():
     while 1:
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
-        print xy
-        time.sleep(0.2)
+        # print xy
+        if xy[1] > 60:
+            print "hello there"
+
+        time.sleep(0.05)
+
         # c = getkey()
         # if c == 'g':
         #     getNewMP3s()
