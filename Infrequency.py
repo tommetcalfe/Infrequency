@@ -27,9 +27,11 @@ import getopt
 import termios
 import os
 import subprocess
+import RPi.GPIO as GPIO
 from pyomxplayer import OMXPlayer
 from adxl345 import ADXL345
 
+GPIO.setmode(GPIO.BCM)
 TERMIOS = termios
 podcastArray = []
 podcastTitleArray = []
@@ -189,9 +191,10 @@ if __name__ == '__main__':
     getPodcastList(query)
     time.sleep(1)
     getNewMP3s()
-
+    GPIO.output(18,True)
     try:
         main_loop()
     except KeyboardInterrupt:
+        GPIO.output(18,False)
         print >> sys.stderr, '\nExiting by User Request.\n'
         sys.exit(0)
