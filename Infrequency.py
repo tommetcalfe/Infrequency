@@ -171,16 +171,8 @@ def convertAccelToAngle(x,y,z):
 def main_loop():
     while 1:
         axes = adxl345.getAxes(True)
-        print "   x = %.3fG" % ( axes['x'] )
-        print "   y = %.3fG" % ( axes['y'] )
-        print "   z = %.3fG" % ( axes['z'] )
-
-        if axes['z'] < -0.4 | axes['z'] > 0.1:
-            stopTrack()
-
-        if axes['z'] > -0.4 | axes['z'] < 0.1:
-            print "settled"
-
+    	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
+        print xy
         time.sleep(0.2)
         # c = getkey()
         # if c == 'g':
