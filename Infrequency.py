@@ -175,10 +175,10 @@ def main_loop():
         print "   y = %.3fG" % ( axes['y'] )
         print "   z = %.3fG" % ( axes['z'] )
 
-        if axes['z'] < -0.4 || axes['z'] > 0.1:
+        if axes['z'] < -0.4 | axes['z'] > 0.1:
             stopTrack()
 
-        if axes['z'] > -0.4 || axes['z'] < 0.1:
+        if axes['z'] > -0.4 | axes['z'] < 0.1:
             print "settled"
 
         time.sleep(0.2)
