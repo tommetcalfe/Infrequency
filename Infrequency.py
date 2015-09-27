@@ -27,7 +27,9 @@ import getopt
 import termios
 import os
 import subprocess
+from pyomxplayer import OMXPlayer
 
+omx = OMXPlayer
 TERMIOS = termios
 podcastArray = []
 podcastTitleArray = []
@@ -132,6 +134,7 @@ def getNewMP3s():
 #
 #-------------------------------------------------------
 def stopTrack():
+    omx.stop()
     # track.stdin.write('q')
     print "Stop the Track"
 
@@ -144,10 +147,10 @@ def playNewTrack():
     if len(podcastMP3Array) > 0:
         randomMP3 = random.randint(0,len(podcastMP3Array)-1)
         print "Play " + podcastMP3Array[randomMP3]
-
-        track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
-        time.sleep(5)
-        track.stdin.write('q')
+        omx = OMXPlayer(podcastMP3Array[randomMP3])
+        # track = subprocess.Popen(['omxplayer','-o','hdmi',podcastMP3Array[randomMP3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
+        # time.sleep(5)
+        # track.stdin.write('q')
         del podcastMP3Array[randomMP3]
     else:
         print "No more tracks ... Getting a new playlist!"
@@ -169,7 +172,7 @@ def main_loop():
         if c == 'g':
             getNewMP3s()
         if c == 'p':
-            stopTrack()
+            # stopTrack()
             time.sleep(1)
             playNewTrack()
 
