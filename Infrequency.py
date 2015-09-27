@@ -170,9 +170,9 @@ def main_loop():
         axes = adxl345.getAxes(True)
     	xy = convertAccelToAngle(axes['x'],axes['y'],axes['z'])
         print xy
-        if xy[1] > 70:
+        if xy[1] > 80:
             stopTrack()
-            time.sleep(0.5)
+            time.sleep(1)
             playNewTrack()
 
         time.sleep(0.1)
