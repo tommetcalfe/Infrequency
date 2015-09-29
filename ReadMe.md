@@ -9,6 +9,21 @@ Is an Internet of Things radio. When you tilt the radio it plays a song.
 * 1x ADXL345 Accelerometer
 * 1x Infrequency.py
 
+####Running Infrequency
+In an ideal scenario Infrequency should boot on power. However, for now you will need to run some commands to make it work.
+
+First ssh into the machine.
+
+* ````ssh pi@infrequency````
+
+Once you are in
+
+* ````cd Infrequency````
+
+Then run infrequency
+
+* ````sudo python Infrequency.py -q <Your_Search_Term>````
+
 ####Configuring the Pi
 #####Dependencies
 Infrequency has the following dependencies.
